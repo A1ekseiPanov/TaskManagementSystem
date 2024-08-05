@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.panov.taskmanagementsystem.model.dto.JwtTokenResponse;
-import ru.panov.taskmanagementsystem.model.dto.UserDTO;
-import ru.panov.taskmanagementsystem.model.dto.UserRequest;
-import ru.panov.taskmanagementsystem.model.dto.UserResponse;
+import ru.panov.taskmanagementsystem.model.dto.response.JwtTokenResponse;
+import ru.panov.taskmanagementsystem.model.dto.request.UserRequest;
+import ru.panov.taskmanagementsystem.model.dto.request.LoginRequest;
+import ru.panov.taskmanagementsystem.model.dto.response.UserResponse;
 import ru.panov.taskmanagementsystem.service.UserService;
 
 import java.util.Map;
@@ -29,13 +29,13 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping(value = LOGIN_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JwtTokenResponse> login(@RequestBody UserRequest userRequest) {
-        JwtTokenResponse token = userService.login(userRequest);
+    public ResponseEntity<JwtTokenResponse> login(@RequestBody LoginRequest loginRequest) {
+        JwtTokenResponse token = userService.login(loginRequest);
         return ResponseEntity.ok(token);
     }
 
     @PostMapping(value = REGISTRATION_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserResponse> registration(@Valid @RequestBody UserDTO userDTO,
+    public ResponseEntity<UserResponse> registration(@Valid @RequestBody UserRequest userRequest,
                                                      BindingResult bindingResult,
                                                      UriComponentsBuilder uriComponentsBuilder) throws BindException {
         if (bindingResult.hasErrors()) {
@@ -45,7 +45,7 @@ public class AuthController {
                 throw new BindException(bindingResult);
             }
         } else {
-            UserResponse user = userService.register(userDTO);
+            UserResponse user = userService.register(userRequest);
             return ResponseEntity.created(uriComponentsBuilder.
                             replacePath("users/{userId}")
                             .build(Map.of("userId", user.id())))

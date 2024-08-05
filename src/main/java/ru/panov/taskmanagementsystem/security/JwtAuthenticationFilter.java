@@ -43,11 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         String jwt = authHeader.substring(TOKEN_PREFIX.length());
-        String username = null;
+        String email = null;
         String msg = "";
 
         try {
-            username = jwtService.extractUserName(jwt);
+            email = jwtService.extractEmail(jwt);
         } catch (SignatureException ex) {
             msg = "Invalid JWT signature";
         } catch (MalformedJwtException ex) {
@@ -74,8 +74,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (StringUtils.isNotEmpty(email) && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
 

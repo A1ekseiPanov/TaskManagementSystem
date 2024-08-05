@@ -1,10 +1,10 @@
-package ru.panov.taskmanagementsystem.model.dto;
+package ru.panov.taskmanagementsystem.model.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record UserDTO(
+public record UserRequest(
         @NotBlank(message = "firstName не может быть пустыми или состоять только из пробелов.")
         @Size(min = 5, max = 30, message = "Длина firstName должна составлять от 5 до 30 символов.")
         String firstName,

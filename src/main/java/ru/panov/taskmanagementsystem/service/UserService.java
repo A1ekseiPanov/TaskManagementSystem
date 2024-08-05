@@ -11,13 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.panov.taskmanagementsystem.exception.DuplicateException;
 import ru.panov.taskmanagementsystem.exception.InputDataConflictException;
+import ru.panov.taskmanagementsystem.exception.NotFoundException;
 import ru.panov.taskmanagementsystem.mapper.UserMapper;
 import ru.panov.taskmanagementsystem.model.Role;
 import ru.panov.taskmanagementsystem.model.User;
-import ru.panov.taskmanagementsystem.model.dto.JwtTokenResponse;
-import ru.panov.taskmanagementsystem.model.dto.UserDTO;
-import ru.panov.taskmanagementsystem.model.dto.UserRequest;
-import ru.panov.taskmanagementsystem.model.dto.UserResponse;
+import ru.panov.taskmanagementsystem.model.dto.response.JwtTokenResponse;
+import ru.panov.taskmanagementsystem.model.dto.request.UserRequest;
+import ru.panov.taskmanagementsystem.model.dto.request.LoginRequest;
+import ru.panov.taskmanagementsystem.model.dto.response.UserResponse;
 import ru.panov.taskmanagementsystem.reposirory.UserRepository;
 import ru.panov.taskmanagementsystem.security.JwtService;
 
@@ -36,8 +37,8 @@ public class UserService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserResponse register(UserDTO userDTO) {
-        Optional<User> currentUser = userRepository.findByEmail(userDTO.email());
+    public UserResponse register(UserRequest userRequest) {
+        Optional<User> currentUser = userRepository.findByEmail(userRequest.email());
 
         if (currentUser.isPresent()) {
             throw new DuplicateException("Такой пользователь уже существует");
@@ -47,31 +48,35 @@ public class UserService {
         roles.add(Role.USER);
 
         User newUser = User.builder()
-                .lastName(userDTO.lastName())
-                .firstName(userDTO.firstName())
-                .email(userDTO.email())
+                .lastName(userRequest.lastName())
+                .firstName(userRequest.firstName())
+                .email(userRequest.email())
                 .roles(roles)
-                .password(passwordEncoder.encode(userDTO.password()))
+                .password(passwordEncoder.encode(userRequest.password()))
                 .build();
         return userMapper.userToResponseEntity(userRepository.save(newUser));
     }
 
-    public JwtTokenResponse login(UserRequest userRequest) {
+    public JwtTokenResponse login(LoginRequest loginRequest) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            userRequest.email(),
-                            userRequest.password()
+                            loginRequest.email(),
+                            loginRequest.password()
                     )
             );
         } catch (BadCredentialsException e) {
             throw new InputDataConflictException("неправильное имя пользователя или пароль");
         }
 
-        UserDetails userDetails = detailsService.loadUserByUsername(userRequest.email());
+        UserDetails userDetails = detailsService.loadUserByUsername(loginRequest.email());
         String jwtToken = jwtService.generateToken(userDetails);
         return JwtTokenResponse.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    public User getById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id:%s не найден".formatted(userId)));
     }
 }

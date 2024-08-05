@@ -1,4 +1,4 @@
-package ru.panov.taskmanagementsystem.model.dto;
+package ru.panov.taskmanagementsystem.model.dto.response;
 
 import lombok.*;
 
