@@ -9,6 +9,7 @@ import ru.panov.taskmanagementsystem.model.dto.request.StatusRequest;
 import ru.panov.taskmanagementsystem.model.dto.response.StatusResponse;
 import ru.panov.taskmanagementsystem.reposirory.StatusRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,6 +39,7 @@ public class StatusService {
     public void update(Long statusId, StatusRequest statusRequest) {
         Status status = get(statusId);
         status.setStatus(statusRequest.status());
+        status.setUpdated(LocalDateTime.now());
         statusRepository.save(status);
     }
 

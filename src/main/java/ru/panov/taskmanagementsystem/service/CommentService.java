@@ -14,8 +14,8 @@ import ru.panov.taskmanagementsystem.model.dto.request.CommentRequest;
 import ru.panov.taskmanagementsystem.model.dto.response.CommentResponse;
 import ru.panov.taskmanagementsystem.reposirory.CommentRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class CommentService {
     private final CommentMapper commentMapper;
 
     @Transactional
-    public CommentResponse add(CommentRequest commentRequest,Long taskId, Long userId) {
+    public CommentResponse add(CommentRequest commentRequest, Long taskId, Long userId) {
         Task task = taskService.getTask(taskId, userId);
         User author = userService.getById(userId);
         Comment comment = Comment.builder()
@@ -38,32 +38,33 @@ public class CommentService {
     }
 
     @Transactional
-    public void update(Long commentId, CommentRequest commentRequest,Long taskId, Long userId) {
-        Optional<Comment> comment = commentRepository.findById(commentId);
-        if (comment.isPresent()) {
-            if (comment.get().getTask().getId().equals(taskId)
-                    && comment.get().getAuthor().getId().equals(userId)) {
-                comment.get().setComment(commentRequest.comment());
-            } else {
-                throw new InputDataConflictException("Не совпадает юзер или задача");
-            }
+    public void update(Long commentId, CommentRequest commentRequest, Long taskId, Long userId) {
+        Comment comment = getComment(commentId);
+        if (comment.getTask().getId().equals(taskId)
+                && comment.getAuthor().getId().equals(userId)) {
+            comment.setComment(commentRequest.comment());
+            comment.setUpdated(LocalDateTime.now());
+            commentRepository.save(comment);
         } else {
-            throw new NotFoundException("Коментарий с id:%s не найден".formatted(commentId));
+            throw new InputDataConflictException(
+                    ("Для изменения коментария с id:%s выбрана не та задача с id:%s," +
+                            " либо это не коментарий польвоателя с id:%s")
+                            .formatted(commentId, taskId, userId));
         }
     }
 
+
     @Transactional
     public void delete(Long commentId, Long taskId, Long userId) {
-        Optional<Comment> comment = commentRepository.findById(commentId);
-        if (comment.isPresent()) {
-            if (comment.get().getTask().getId().equals(taskId)
-                    && comment.get().getAuthor().getId().equals(userId)) {
-                commentRepository.deleteById(commentId);
-            } else {
-                throw new InputDataConflictException("Не совпадает юзер или задача");
-            }
+        Comment comment = getComment(commentId);
+        if (comment.getTask().getId().equals(taskId)
+                && comment.getAuthor().getId().equals(userId)) {
+            commentRepository.deleteById(commentId);
         } else {
-            throw new NotFoundException("Коментарий с id:%s не найден".formatted(commentId));
+            throw new InputDataConflictException(
+                    ("Для удаления коментария с id:%s выбрана не та задача с id:%s," +
+                            " либо это не коментарий польвоателя с id:%s")
+                            .formatted(commentId, taskId, userId));
         }
     }
 
@@ -71,5 +72,12 @@ public class CommentService {
     public List<CommentResponse> commentsByTask(Long taskId, Pageable pageable) {
         return commentMapper.listCommentToListResponseEntity(
                 commentRepository.findByTask_Id(taskId, pageable).getContent());
+    }
+
+    @Transactional(readOnly = true)
+    public Comment getComment(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(
+                () -> new NotFoundException("Коментария с Id:%s не существует"
+                        .formatted(commentId)));
     }
 }

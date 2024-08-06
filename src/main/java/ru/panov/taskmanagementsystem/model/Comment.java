@@ -1,9 +1,6 @@
 package ru.panov.taskmanagementsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -14,12 +11,14 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Comment extends BaseEntity{
-    @NotBlank
+    @Column(nullable = false)
     private String comment;
 
     @ManyToOne
+    @JoinColumn(name = "author_id")
     private User author;
 
     @ManyToOne
+    @JoinColumn(name = "task_id")
     private Task task;
 }

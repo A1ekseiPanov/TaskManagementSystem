@@ -4,11 +4,16 @@ spring:
     username: username
     password: password
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/changelog.xml
+    default-schema: liquibase_service
 
   jpa:
     show-sql: true
-    hibernate:
-      ddl-auto: create-drop
 
 jwt:
   secret: bc2dfaba0bf4d1ae1b36f9e03f364c6f02cee9698315d2ed866b36e6abf70e03

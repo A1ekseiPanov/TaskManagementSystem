@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.panov.taskmanagementsystem.exception.DuplicateException;
 import ru.panov.taskmanagementsystem.exception.NotFoundException;
 import ru.panov.taskmanagementsystem.mapper.TaskMapper;
 import ru.panov.taskmanagementsystem.mapper.UserMapper;
@@ -16,6 +17,7 @@ import ru.panov.taskmanagementsystem.model.dto.response.TaskResponse;
 import ru.panov.taskmanagementsystem.model.dto.response.UserResponse;
 import ru.panov.taskmanagementsystem.reposirory.TaskRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -45,9 +47,13 @@ public class TaskService {
 
     public TaskResponse addPerformer(Long taskId, Long userId, Long performId) {
         Task task = getTask(taskId, userId);
-        List<User> tasks = task.getPerformers();
+        List<User> users = task.getPerformers();
         User performUser = userService.getById(performId);
-        tasks.add(performUser);
+        if (users.contains(performUser)) {
+            throw new DuplicateException("Исполнитель с id:%s уже добавлен к задаче с id:%s"
+                    .formatted(performId, taskId));
+        }
+        users.add(performUser);
         return taskMapper.entityToResponse(taskRepository.save(task));
     }
 
@@ -61,6 +67,7 @@ public class TaskService {
         Task task = getTask(taskId, userId);
         Task updatedTask = taskMapper.requestToEntity(taskRequest);
         updatedTask.setId(task.getId());
+        updatedTask.setUpdated(LocalDateTime.now());
         taskRepository.save(updatedTask);
     }
 

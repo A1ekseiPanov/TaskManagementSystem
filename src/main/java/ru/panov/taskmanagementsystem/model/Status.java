@@ -1,5 +1,6 @@
 package ru.panov.taskmanagementsystem.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -12,5 +13,6 @@ import lombok.*;
 @Setter
 @Builder
 public class Status extends BaseEntity{
+    @Column(nullable = false, unique = true)
     private String status;
 }

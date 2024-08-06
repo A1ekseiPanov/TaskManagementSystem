@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        logicalFilePath="db/changelog/changelog.xml">
+    <changeSet id="002-create-table" author="panov">
+
+        <createTable schemaName="dbo" tableName="coments">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="author_id" type="bigint">
+            </column>
+            <column name="task_id" type="bigint">
+            </column>
+            <column name="comment" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp" defaultValueDate="now()">
+            </column>
+            <column name="updated" type="timestamp" defaultValueDate="now()">
+            </column>
+        </createTable>
+
+        <createTable schemaName="dbo" tableName="statuses">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="status" type="varchar">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="created" type="timestamp" defaultValueDate="now()">
+            </column>
+            <column name="updated" type="timestamp" defaultValueDate="now()">
+            </column>
+        </createTable>
+
+        <createTable schemaName="dbo" tableName="tasks">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="status_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="header" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp" defaultValueDate="now()">
+            </column>
+            <column name="updated" type="timestamp" defaultValueDate="now()">
+            </column>
+        </createTable>
+
+        <createTable schemaName="dbo" tableName="tasks_performers">
+            <column name="performer_id" type="bigint">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_task_performer"/>
+            </column>
+            <column name="task_id" type="bigint">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_task_performer"/>
+            </column>
+        </createTable>
+
+        <createTable schemaName="dbo" tableName="user_role">
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_user_role"/>
+            </column>
+            <column name="role" type="varchar">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_user_role"/>
+            </column>
+        </createTable>
+
+        <createTable schemaName="dbo" tableName="users">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="email" type="varchar">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="first_name" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp" defaultValueDate="now()">
+            </column>
+            <column name="updated" type="timestamp" defaultValueDate="now()">
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableSchemaName="dbo"
+                                 baseTableName="coments"
+                                 baseColumnNames="author_id"
+                                 constraintName="fk_comment_author"
+                                 referencedTableSchemaName="dbo"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableSchemaName="dbo"
+                                 baseTableName="coments"
+                                 baseColumnNames="task_id"
+                                 constraintName="fk_comment_task"
+                                 referencedTableSchemaName="dbo"
+                                 referencedTableName="tasks"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableSchemaName="dbo"
+                                 baseTableName="tasks"
+                                 baseColumnNames="status_id"
+                                 constraintName="fk_task_status"
+                                 referencedTableSchemaName="dbo"
+                                 referencedTableName="statuses"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableSchemaName="dbo"
+                                 baseTableName="tasks"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_task_user"
+                                 referencedTableSchemaName="dbo"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableSchemaName="dbo"
+                                 baseTableName="tasks_performers"
+                                 baseColumnNames="performer_id"
+                                 constraintName="fk_Tasks_performer_User"
+                                 referencedTableSchemaName="dbo"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableSchemaName="dbo"
+                                 baseTableName="tasks_performers"
+                                 baseColumnNames="task_id"
+                                 constraintName="fk_Tasks_performer_Task"
+                                 referencedTableSchemaName="dbo"
+                                 referencedTableName="tasks"
+                                 referencedColumnNames="id"/>
+
+
+        <addForeignKeyConstraint baseTableSchemaName="dbo"
+                                 baseTableName="user_role"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_User_role_User"
+                                 referencedTableSchemaName="dbo"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

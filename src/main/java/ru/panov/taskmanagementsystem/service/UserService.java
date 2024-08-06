@@ -66,7 +66,7 @@ public class UserService {
                     )
             );
         } catch (BadCredentialsException e) {
-            throw new InputDataConflictException("неправильное имя пользователя или пароль");
+            throw new InputDataConflictException("Неправильное имя пользователя или пароль");
         }
 
         UserDetails userDetails = detailsService.loadUserByUsername(loginRequest.email());
