@@ -1,11 +1,14 @@
 package ru.panov.taskmanagementsystem.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.panov.taskmanagementsystem.model.User;
@@ -33,14 +36,23 @@ public class TaskController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<TaskResponse> createTask(@RequestBody TaskRequest taskRequest,
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskRequest taskRequest,
+                                                   BindingResult bindingResult,
                                                    @AuthenticationPrincipal User user,
-                                                   UriComponentsBuilder uriComponentsBuilder) {
-        TaskResponse task = taskService.create(taskRequest, user.getId());
-        return ResponseEntity.created(uriComponentsBuilder.
-                        replacePath("tasks/{task_id}")
-                        .build(Map.of("task_id", task.taskId())))
-                .body(task);
+                                                   UriComponentsBuilder uriComponentsBuilder) throws BindException {
+        if (bindingResult.hasErrors()) {
+            if (bindingResult instanceof BindException exception) {
+                throw exception;
+            } else {
+                throw new BindException(bindingResult);
+            }
+        } else {
+            TaskResponse task = taskService.create(taskRequest, user.getId());
+            return ResponseEntity.created(uriComponentsBuilder.
+                            replacePath("tasks/{task_id}")
+                            .build(Map.of("task_id", task.taskId())))
+                    .body(task);
+        }
     }
 
     @GetMapping
@@ -51,18 +63,25 @@ public class TaskController {
 
     @PutMapping(value = "/{task_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateTask(@PathVariable("task_id") Long taskId,
-                                           @RequestBody TaskRequest task,
-                                           @AuthenticationPrincipal User user) {
-
-        taskService.update(taskId, task, user.getId());
-        return ResponseEntity.noContent().build();
+                                           @Valid @RequestBody TaskRequest task,
+                                           BindingResult bindingResult,
+                                           @AuthenticationPrincipal User user) throws BindException {
+        if (bindingResult.hasErrors()) {
+            if (bindingResult instanceof BindException exception) {
+                throw exception;
+            } else {
+                throw new BindException(bindingResult);
+            }
+        } else {
+            taskService.update(taskId, task, user.getId());
+            return ResponseEntity.noContent().build();
+        }
     }
 
-    @PutMapping(value = "/{task_id}/status/{status_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{task_id}/statuses/{status_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateTaskStatus(@PathVariable("task_id") Long taskId,
                                                  @PathVariable("status_id") Long statusId,
                                                  @AuthenticationPrincipal User user) {
-
         taskService.updateStatus(taskId, user.getId(), statusId);
         return ResponseEntity.noContent().build();
     }
@@ -82,14 +101,22 @@ public class TaskController {
 
     @PostMapping("/statuses")
 //    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<StatusResponse> crateStatus(@RequestBody StatusRequest statusRequest,
-                                                      UriComponentsBuilder uriComponentsBuilder) {
-        StatusResponse statusResponse = statusService.create(statusRequest);
-
-        return ResponseEntity.created(uriComponentsBuilder.
-                        replacePath("tasks/statuses/{status_id}")
-                        .build(Map.of("status_id", statusResponse.statusId())))
-                .body(statusResponse);
+    public ResponseEntity<StatusResponse> crateStatus(@Valid @RequestBody StatusRequest statusRequest,
+                                                      BindingResult bindingResult,
+                                                      UriComponentsBuilder uriComponentsBuilder) throws BindException {
+        if (bindingResult.hasErrors()) {
+            if (bindingResult instanceof BindException exception) {
+                throw exception;
+            } else {
+                throw new BindException(bindingResult);
+            }
+        } else {
+            StatusResponse statusResponse = statusService.create(statusRequest);
+            return ResponseEntity.created(uriComponentsBuilder.
+                            replacePath("tasks/statuses/{status_id}")
+                            .build(Map.of("status_id", statusResponse.statusId())))
+                    .body(statusResponse);
+        }
     }
 
     @DeleteMapping("/statuses/{status_id}")
@@ -103,9 +130,18 @@ public class TaskController {
     @PutMapping(value = "/statuses/{status_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     //    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> updateStatus(@PathVariable("status_id") Long statusId,
-                                              @RequestBody StatusRequest statusRequest) {
-       statusService.update(statusId,statusRequest);
-        return ResponseEntity.noContent().build();
+                                             @Valid @RequestBody StatusRequest statusRequest,
+                                             BindingResult bindingResult) throws BindException {
+        if (bindingResult.hasErrors()) {
+            if (bindingResult instanceof BindException exception) {
+                throw exception;
+            } else {
+                throw new BindException(bindingResult);
+            }
+        } else {
+            statusService.update(statusId, statusRequest);
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @GetMapping("/{task_id}/performers")
@@ -130,16 +166,25 @@ public class TaskController {
 
     @PostMapping(value = "/{task_id}/comments/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentResponse> addComment(@PathVariable("task_id") Long taskId,
-                                                      @RequestBody CommentRequest commentRequest,
+                                                      @Valid @RequestBody CommentRequest commentRequest,
+                                                      BindingResult bindingResult,
                                                       @AuthenticationPrincipal User user,
-                                                      UriComponentsBuilder uriComponentsBuilder) {
+                                                      UriComponentsBuilder uriComponentsBuilder) throws BindException {
+        if (bindingResult.hasErrors()) {
+            if (bindingResult instanceof BindException exception) {
+                throw exception;
+            } else {
+                throw new BindException(bindingResult);
+            }
+        } else {
 
-        CommentResponse commentResponse = commentService.add(commentRequest, taskId, user.getId());
-        return ResponseEntity.created(uriComponentsBuilder.
-                        replacePath("tasks/{task_id}/comments/{comment_Id}")
-                        .build(Map.of("task_id", taskId,
-                                "commentId", commentResponse.commentId())))
-                .body(commentResponse);
+            CommentResponse commentResponse = commentService.add(commentRequest, taskId, user.getId());
+            return ResponseEntity.created(uriComponentsBuilder.
+                            replacePath("tasks/{task_id}/comments/{comment_Id}")
+                            .build(Map.of("task_id", taskId,
+                                    "comment_Id", commentResponse.commentId())))
+                    .body(commentResponse);
+        }
     }
 
     @DeleteMapping("/{task_id}/comments/{comment_id}")
@@ -154,9 +199,18 @@ public class TaskController {
     @PutMapping(value = "/{task_id}/comments/{comment_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateComment(@PathVariable("task_id") Long taskId,
                                               @PathVariable("comment_id") Long commentId,
-                                              @RequestBody CommentRequest commentRequest,
-                                              @AuthenticationPrincipal User user) {
-        commentService.update(commentId, commentRequest, taskId, user.getId());
-        return ResponseEntity.noContent().build();
+                                              @Valid @RequestBody CommentRequest commentRequest,
+                                              BindingResult bindingResult,
+                                              @AuthenticationPrincipal User user) throws BindException {
+        if (bindingResult.hasErrors()) {
+            if (bindingResult instanceof BindException exception) {
+                throw exception;
+            } else {
+                throw new BindException(bindingResult);
+            }
+        } else {
+            commentService.update(commentId, commentRequest, taskId, user.getId());
+            return ResponseEntity.noContent().build();
+        }
     }
 }

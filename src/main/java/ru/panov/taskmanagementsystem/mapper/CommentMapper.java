@@ -11,6 +11,8 @@ import java.util.List;
 public interface CommentMapper {
 
     @Mapping(target = "commentId", source = "comment.id")
+    @Mapping(target = "taskId", source = "comment.task.id")
+    @Mapping(target = "authorId", source = "comment.author.id")
     CommentResponse commentToResponseEntity(Comment comment);
 
     List<CommentResponse> listCommentToListResponseEntity(List<Comment> comments);

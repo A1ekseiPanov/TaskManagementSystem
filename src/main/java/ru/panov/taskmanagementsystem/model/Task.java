@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class Task extends BaseEntity{
+public class Task extends BaseEntity {
     private String header;
     private String description;
     @ManyToOne
@@ -23,7 +23,7 @@ public class Task extends BaseEntity{
     @ManyToOne
     private User user;
     @OneToMany
-    List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
     @OneToMany
     private List<User> performers = new ArrayList<>();
 }

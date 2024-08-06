@@ -66,8 +66,7 @@ public class TaskService {
 
     public Task updateStatus(Long taskId, Long userId, Long statusId) {
         Task task = getTask(taskId, userId);
-        if (!task.getUser().getId().equals(userId) &&
-                task.getPerformers().stream().noneMatch(u -> u.getId().equals(userId))) {
+        if (task.getPerformers().stream().noneMatch(u -> u.getId().equals(userId))) {
             throw new AccessDeniedException(
                     "У пользователя c id:%s нет прав на изменение статуса задачи c id:%s"
                             .formatted(userId, taskId));

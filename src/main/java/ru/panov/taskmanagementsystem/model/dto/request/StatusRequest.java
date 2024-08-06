@@ -1,4 +1,8 @@
 package ru.panov.taskmanagementsystem.model.dto.request;
 
-public record StatusRequest(String status) {
+import jakarta.validation.constraints.NotBlank;
+
+public record StatusRequest(
+        @NotBlank(message = "status не может быть пустым или состоять только из пробелов.")
+        String status) {
 }

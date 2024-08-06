@@ -30,16 +30,4 @@ public abstract class TaskMapper {
     @Mapping(target = "userId", source = "task.user.id")
     public abstract TaskResponse entityToResponse(Task task);
     public abstract List<TaskResponse> listEntityToListResponse(List<Task> task);
-//    {
-//
-//    };
-
-//    {
-//        return TaskResponse.builder()
-//                .id(task.getId())
-//                .userId(task.getUser().getId())
-//                .status(task.getStatus().getStatus())
-//                .
-//                .build();
-//    }
 }
