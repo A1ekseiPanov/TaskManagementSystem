@@ -14,9 +14,12 @@ import java.util.Optional;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     Optional<Task> findByIdAndUser_Id(Long taskId, Long userId);
+    Optional<Task> findByHeader(String header);
 
     Page<Task> findAll(Pageable pageable);
 
     @Query("select t.performers from Task t where t.id = :taskId")
     List<User> findAllPerformersByTaskId(Long taskId);
+
+
 }

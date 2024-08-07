@@ -9,7 +9,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
-
     @Mapping(target = "commentId", source = "comment.id")
     @Mapping(target = "taskId", source = "comment.task.id")
     @Mapping(target = "authorId", source = "comment.author.id")

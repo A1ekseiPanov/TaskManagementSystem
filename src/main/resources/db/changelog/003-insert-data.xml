@@ -18,7 +18,6 @@
         </insert>
 
         <insert schemaName="dbo" tableName="users">
-            <column name="id" value="1"/>
             <column name="email" value="admin@admin.ru"/>
             <column name="first_name" value="admin"/>
             <column name="last_name" value="admin"/>
@@ -26,7 +25,6 @@
         </insert>
 
         <insert schemaName="dbo" tableName="users">
-            <column name="id" value="2"/>
             <column name="email" value="user1@user1.ru"/>
             <column name="first_name" value="user1"/>
             <column name="last_name" value="user1"/>

@@ -1,6 +1,7 @@
 package ru.panov.taskmanagementsystem.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -12,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.panov.taskmanagementsystem.model.dto.response.JwtTokenResponse;
-import ru.panov.taskmanagementsystem.model.dto.request.UserRequest;
 import ru.panov.taskmanagementsystem.model.dto.request.LoginRequest;
+import ru.panov.taskmanagementsystem.model.dto.request.UserRequest;
+import ru.panov.taskmanagementsystem.model.dto.response.JwtTokenResponse;
 import ru.panov.taskmanagementsystem.model.dto.response.UserResponse;
 import ru.panov.taskmanagementsystem.service.UserService;
 
@@ -28,12 +29,19 @@ import static ru.panov.taskmanagementsystem.util.PathConstants.*;
 public class AuthController {
     private final UserService userService;
 
+    @Operation(
+            summary = "Вход в систему",
+            description = "Вход в систему, получаем токен для дальнейшей авторизации"
+    )
     @PostMapping(value = LOGIN_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JwtTokenResponse> login(@RequestBody LoginRequest loginRequest) {
         JwtTokenResponse token = userService.login(loginRequest);
         return ResponseEntity.ok(token);
     }
 
+    @Operation(
+            summary = "Регистрация нового пользователя"
+    )
     @PostMapping(value = REGISTRATION_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> registration(@Valid @RequestBody UserRequest userRequest,
                                                      BindingResult bindingResult,

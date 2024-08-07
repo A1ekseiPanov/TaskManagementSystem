@@ -9,7 +9,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface StatusMapper {
-
     @Mapping(target = "statusId", source = "status.id")
     StatusResponse statusToResponseEntity(Status status);
     List<StatusResponse> listStatusToListResponseEntity(List<Status> status);

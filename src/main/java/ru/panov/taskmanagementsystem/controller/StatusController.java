@@ -1,5 +1,6 @@
 package ru.panov.taskmanagementsystem.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -21,12 +22,17 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class StatusController {
     private final StatusService statusService;
-
+    @Operation(
+            summary = "Получение всех статусов задач"
+    )
     @GetMapping
     public List<StatusResponse> getAllStatuses() {
         return statusService.statuses();
     }
 
+    @Operation(
+            summary = "Создание нового статуса задач"
+    )
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<StatusResponse> crateStatus(@Valid @RequestBody StatusRequest statusRequest,
@@ -47,6 +53,9 @@ public class StatusController {
         }
     }
 
+    @Operation(
+            summary = "Удаление статуса задач"
+    )
     @DeleteMapping("/{status_id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteStatus(@PathVariable("status_id") Long statusId) {
@@ -55,6 +64,9 @@ public class StatusController {
                 .build();
     }
 
+    @Operation(
+            summary = "Обновление статуса задач"
+    )
     @PutMapping(value = "/{status_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> updateStatus(@PathVariable("status_id") Long statusId,

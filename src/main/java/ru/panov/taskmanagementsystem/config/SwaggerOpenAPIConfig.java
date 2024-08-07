@@ -15,6 +15,9 @@ import org.springframework.context.annotation.Configuration;
                 title = "Task Management System API",
                 description = """
                         Task Management System API
+                        <p><b>Тестовые данные:</b><br>
+                        - admin: admin@admin.ru / admin<br>
+                        - user: user1@user1.ru / user1<br>
                         """,
                 version = "1.0.0",
                 contact = @Contact(
