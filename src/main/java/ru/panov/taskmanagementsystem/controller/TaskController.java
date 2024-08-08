@@ -23,8 +23,10 @@ import ru.panov.taskmanagementsystem.service.TaskService;
 import java.util.List;
 import java.util.Map;
 
+import static ru.panov.taskmanagementsystem.util.PathConstants.TASKS_PATH;
+
 @RestController
-@RequestMapping(value = "/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = TASKS_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class TaskController {
     private final TaskService taskService;

@@ -17,8 +17,10 @@ import ru.panov.taskmanagementsystem.service.StatusService;
 import java.util.List;
 import java.util.Map;
 
+import static ru.panov.taskmanagementsystem.util.PathConstants.STATUSES_PATH;
+
 @RestController
-@RequestMapping(value = "/statuses", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = STATUSES_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class StatusController {
     private final StatusService statusService;
