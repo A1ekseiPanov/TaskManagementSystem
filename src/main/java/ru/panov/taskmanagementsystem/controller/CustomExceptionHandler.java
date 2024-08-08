@@ -12,7 +12,6 @@ import ru.panov.taskmanagementsystem.exception.DuplicateException;
 import ru.panov.taskmanagementsystem.exception.InputDataConflictException;
 import ru.panov.taskmanagementsystem.exception.NotFoundException;
 
-
 @RestControllerAdvice
 public class CustomExceptionHandler {
 

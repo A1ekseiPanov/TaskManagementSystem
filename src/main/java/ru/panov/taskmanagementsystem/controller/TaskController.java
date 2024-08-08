@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,12 +12,14 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import ru.panov.taskmanagementsystem.model.Task;
 import ru.panov.taskmanagementsystem.model.User;
 import ru.panov.taskmanagementsystem.model.dto.request.CommentRequest;
 import ru.panov.taskmanagementsystem.model.dto.request.TaskRequest;
 import ru.panov.taskmanagementsystem.model.dto.response.CommentResponse;
 import ru.panov.taskmanagementsystem.model.dto.response.TaskResponse;
 import ru.panov.taskmanagementsystem.model.dto.response.UserResponse;
+import ru.panov.taskmanagementsystem.reposirory.specifications.TaskSpecification;
 import ru.panov.taskmanagementsystem.service.CommentService;
 import ru.panov.taskmanagementsystem.service.TaskService;
 
@@ -61,9 +64,19 @@ public class TaskController {
             summary = "Получение всех задач"
     )
     @GetMapping
-    public List<TaskResponse> gelAll(@RequestParam(value = "offset", defaultValue = "0") Integer offset,
+    public List<TaskResponse> gelAll(@RequestParam(value = "header", required = false) String header,
+                                     @RequestParam(value = "description", required = false) String description,
+                                     @RequestParam(value = "offset", defaultValue = "0") Integer offset,
                                      @RequestParam(value = "limit", defaultValue = "20") Integer limit) {
-        return taskService.getAll(PageRequest.of(offset, limit));
+        Specification<Task> specification = Specification.where(null);
+        if (header != null) {
+            specification = specification.and(TaskSpecification.headerContains(header));
+        }
+        if (description != null) {
+
+            specification = specification.and(TaskSpecification.descriptionContains(description));
+        }
+        return taskService.getAll(specification, PageRequest.of(offset, limit));
     }
 
 

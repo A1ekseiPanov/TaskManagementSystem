@@ -23,6 +23,7 @@
         <jjwt.version>0.12.5</jjwt.version>
         <apache.common.version>3.15.0</apache.common.version>
         <springdoc.version>2.6.0</springdoc.version>
+        <preliquibase.version>1.5.1</preliquibase.version>
     </properties>
 
     <dependencies>
@@ -116,6 +117,12 @@
             <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.lbruun.springboot</groupId>
+            <artifactId>preliquibase-spring-boot-starter</artifactId>
+            <version>${preliquibase.version}</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>

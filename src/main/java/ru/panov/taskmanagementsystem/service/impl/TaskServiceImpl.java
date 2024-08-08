@@ -2,6 +2,7 @@ package ru.panov.taskmanagementsystem.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.panov.taskmanagementsystem.exception.DuplicateException;
@@ -37,7 +38,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponse create(TaskRequest taskRequest, Long userId) {
-
         checkUniq(taskRequest);
 
         User user = userService.getById(userId);
@@ -93,7 +93,6 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void update(Long taskId, TaskRequest taskRequest, Long userId) {
         Task task = getTaskByIdAndUserId(taskId, userId);
-        checkUniq(taskRequest);
         task.setHeader(taskRequest.header());
         task.setDescription(taskRequest.description());
         task.setStatus(statusService.get(taskRequest.statusId()));
@@ -103,7 +102,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateStatus(Long taskId, Long userId, Long statusId) {
+    public void updateStatus(Long taskId, Long userId, Long statusId) {
         Task task = getTaskById(taskId);
         if (task.getPerformers().stream().noneMatch(u -> u.getId().equals(userId))) {
             throw new InputDataConflictException(
@@ -113,13 +112,13 @@ public class TaskServiceImpl implements TaskService {
         }
         Status status = statusService.get(statusId);
         task.setStatus(status);
-        return taskRepository.save(task);
+        taskRepository.save(task);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<TaskResponse> getAll(Pageable pageable) {
-        return taskMapper.listEntityToListResponse(taskRepository.findAll(pageable).getContent());
+    public List<TaskResponse> getAll(Specification<Task> specification, Pageable pageable) {
+        return taskMapper.listEntityToListResponse(taskRepository.findAll(specification, pageable).getContent());
     }
 
     @Override

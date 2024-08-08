@@ -1,9 +1,9 @@
 package ru.panov.taskmanagementsystem.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,7 @@ public class Task extends BaseEntity {
     private User user;
     @OneToMany(mappedBy = "task")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @Fetch(FetchMode.SELECT)
     private List<Comment> comments = new ArrayList<>();
     @ManyToMany
     @JoinTable(name = "tasks_performers",

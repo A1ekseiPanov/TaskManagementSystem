@@ -1,6 +1,7 @@
 package ru.panov.taskmanagementsystem.service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import ru.panov.taskmanagementsystem.model.Task;
 import ru.panov.taskmanagementsystem.model.dto.request.TaskRequest;
 import ru.panov.taskmanagementsystem.model.dto.response.TaskResponse;
@@ -21,9 +22,9 @@ public interface TaskService {
 
     void update(Long taskId, TaskRequest taskRequest, Long userId);
 
-    Task updateStatus(Long taskId, Long userId, Long statusId);
+    void updateStatus(Long taskId, Long userId, Long statusId);
 
-    List<TaskResponse> getAll(Pageable pageable);
+    List<TaskResponse> getAll(Specification<Task> specification, Pageable pageable);
 
     void delete(Long taskId, Long userId);
 }
