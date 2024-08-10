@@ -65,9 +65,9 @@ class CommentServiceImplTest {
 
         CommentResponse commentResponse = commentService.add(commentRequest, taskId, userId);
 
-        verify(taskService,times(1)).getTaskById(taskId);
-        verify(userService,times(1)).getById(userId);
-        verify(commentRepository,times(1)).save(any(Comment.class));
+        verify(taskService, times(1)).getTaskById(taskId);
+        verify(userService, times(1)).getById(userId);
+        verify(commentRepository, times(1)).save(any(Comment.class));
     }
 
     @Test
@@ -96,11 +96,9 @@ class CommentServiceImplTest {
 
         commentService.update(commentId, commentRequest, taskId, userId);
 
-        verify(commentRepository,times(1)).save(comment);
-        verify(commentRepository,times(1)).findById(commentId);
+        verify(commentRepository, times(1)).save(comment);
+        verify(commentRepository, times(1)).findById(commentId);
     }
-
-
 
 
     @Test

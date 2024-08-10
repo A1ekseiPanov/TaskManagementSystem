@@ -40,7 +40,7 @@ public class StatusServiceImpl implements StatusService {
 
     @Override
     public void delete(Long statusId) {
-        statusRepository.deleteById(statusId);
+        statusRepository.delete(get(statusId));
     }
 
     @Override

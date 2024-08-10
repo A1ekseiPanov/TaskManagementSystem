@@ -15,5 +15,4 @@ public interface CommentMapper {
     CommentResponse commentToResponseEntity(Comment comment);
 
     List<CommentResponse> listCommentToListResponseEntity(List<Comment> comments);
-
 }

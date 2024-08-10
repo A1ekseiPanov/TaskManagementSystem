@@ -24,6 +24,4 @@ public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificat
 
     @Query("select t.performers from Task t where t.id = :taskId")
     List<User> findAllPerformersByTaskId(Long taskId);
-
-
 }

@@ -51,7 +51,6 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.entityToResponse(taskRepository.save(task));
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public Task getTaskByIdAndUserId(Long taskId, Long userId) {

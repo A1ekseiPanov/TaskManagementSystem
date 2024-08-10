@@ -28,6 +28,11 @@ import java.util.Map;
 
 import static ru.panov.taskmanagementsystem.util.PathConstants.TASKS_PATH;
 
+/**
+ * Класс TaskController отвечает за обработку HTTP-запросов, связанных с задачами.
+ * Предоставляет эндпоинты для создания, получения, обновления и удаления задач,
+ * а также управления исполнителями и комментариями к задачам.
+ */
 @RestController
 @RequestMapping(value = TASKS_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -35,7 +40,17 @@ public class TaskController {
     private final TaskService taskService;
     private final CommentService commentService;
 
-
+    /**
+     * Создает новую задачу.
+     * Эта операция доступна для аутентифицированных пользователей.
+     *
+     * @param taskRequest          объект запроса, содержащий данные для создания задачи.
+     * @param bindingResult        результат валидации.
+     * @param user                 аутентифицированный пользователь.
+     * @param uriComponentsBuilder используется для построения URI для созданной задачи.
+     * @return {@link ResponseEntity}, содержащий созданный объект {@link TaskResponse} и URI его местоположения.
+     * @throws BindException если запрос содержит ошибки валидации.
+     */
     @Operation(
             summary = "Создание задачи",
             description = "Создание задачи аутентифицированным пользователем"
@@ -60,6 +75,15 @@ public class TaskController {
         }
     }
 
+    /**
+     * Получает все задачи с возможностью фильтрации по заголовку и описанию и пагинацией.
+     *
+     * @param header      заголовок задачи для фильтрации (опционально).
+     * @param description описание задачи для фильтрации (опционально).
+     * @param offset      смещение для пагинации (по умолчанию 0).
+     * @param limit       количество записей на страницу (по умолчанию 20).
+     * @return список объектов {@link TaskResponse}, представляющих все задачи, соответствующие фильтрам.
+     */
     @Operation(
             summary = "Получение всех задач"
     )
@@ -79,7 +103,17 @@ public class TaskController {
         return taskService.getAll(specification, PageRequest.of(offset, limit));
     }
 
-
+    /**
+     * Обновляет задачу по ее ID.
+     * Эта операция доступна для аутентифицированных пользователей.
+     *
+     * @param taskId        ID задачи, которую необходимо обновить.
+     * @param task          объект запроса, содержащий обновленные данные задачи.
+     * @param bindingResult результат валидации.
+     * @param user          аутентифицированный пользователь.
+     * @return {@link ResponseEntity} без содержимого.
+     * @throws BindException если запрос содержит ошибки валидации.
+     */
     @Operation(
             summary = "Обновление задачи",
             description = "Обновление задачи по ее id"
@@ -101,6 +135,15 @@ public class TaskController {
         }
     }
 
+    /**
+     * Обновляет статус задачи по ее ID.
+     * Эта операция доступна исполнителям задачи.
+     *
+     * @param taskId   ID задачи, для которой обновляется статус.
+     * @param statusId ID нового статуса.
+     * @param user     аутентифицированный пользователь.
+     * @return {@link ResponseEntity} без содержимого.
+     */
     @Operation(
             summary = "Обновление статуса у задачи исполнителями",
             description = "Обновление статуса у конкретной задачи исполнителями"
@@ -113,6 +156,14 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Удаляет задачу по ее ID.
+     * Эта операция доступна для аутентифицированных пользователей.
+     *
+     * @param taskId ID задачи, которую необходимо удалить.
+     * @param user   аутентифицированный пользователь.
+     * @return {@link ResponseEntity} без содержимого.
+     */
     @Operation(
             summary = "Удаление задачи",
             description = "Удаление задачи по ее id"
@@ -125,6 +176,12 @@ public class TaskController {
                 .build();
     }
 
+    /**
+     * Получает всех исполнителей задачи по ее ID.
+     *
+     * @param taskId ID задачи.
+     * @return список объектов {@link UserResponse}, представляющих исполнителей задачи.
+     */
     @Operation(
             summary = "Получение всех исполнителей задачи",
             description = "Получить всех исполнителей задачи по ее id"
@@ -134,6 +191,15 @@ public class TaskController {
         return taskService.getPerformerByTaskId(taskId);
     }
 
+    /**
+     * Назначает исполнителя задаче.
+     * Эта операция доступна автору задачи.
+     *
+     * @param taskId      ID задачи, для которой назначается исполнитель.
+     * @param performerId ID исполнителя.
+     * @param user        аутентифицированный пользователь.
+     * @return {@link ResponseEntity} без содержимого.
+     */
     @Operation(
             summary = "Назначение исполнителя задаче",
             description = "Назначение исполнителя задаче автором задачи"
@@ -146,6 +212,14 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Получает все комментарии к задаче по ее ID с возможностью пагинации.
+     *
+     * @param taskId ID задачи.
+     * @param offset смещение для пагинации (по умолчанию 0).
+     * @param limit  количество записей на страницу (по умолчанию 20).
+     * @return список объектов {@link CommentResponse}, представляющих комментарии к задаче.
+     */
     @Operation(
             summary = "Получение всех коментариев к задаче",
             description = "Получение всех коментариев к задаче по ее id"
@@ -157,6 +231,18 @@ public class TaskController {
         return commentService.commentsByTask(taskId, PageRequest.of(offset, limit));
     }
 
+    /**
+     * Добавляет новый комментарий к задаче.
+     * Эта операция доступна для аутентифицированных пользователей.
+     *
+     * @param taskId               ID задачи, к которой добавляется комментарий.
+     * @param commentRequest       объект запроса, содержащий данные для нового комментария.
+     * @param bindingResult        результат валидации.
+     * @param user                 аутентифицированный пользователь.
+     * @param uriComponentsBuilder используется для построения URI для созданного комментария.
+     * @return {@link ResponseEntity}, содержащий созданный объект {@link CommentResponse} и URI его местоположения.
+     * @throws BindException если запрос содержит ошибки валидации.
+     */
     @Operation(
             summary = "Добавление нового коментария к задаче"
     )
@@ -183,6 +269,15 @@ public class TaskController {
         }
     }
 
+    /**
+     * Удаляет комментарий у задачи по его ID.
+     * Эта операция доступна для аутентифицированных пользователей.
+     *
+     * @param taskId    ID задачи, к которой относится комментарий.
+     * @param commentId ID комментария, который необходимо удалить.
+     * @param user      аутентифицированный пользователь.
+     * @return {@link ResponseEntity} без содержимого.
+     */
     @Operation(
             summary = "Удаление коментария у задачи",
             description = "Удаление коментария у задачи по ее id"
@@ -196,6 +291,18 @@ public class TaskController {
                 .build();
     }
 
+    /**
+     * Обновляет комментарий у задачи по его ID.
+     * Эта операция доступна для аутентифицированных пользователей.
+     *
+     * @param taskId         ID задачи, к которой относится комментарий.
+     * @param commentId      ID комментария, который необходимо обновить.
+     * @param commentRequest объект запроса, содержащий обновленные данные комментария.
+     * @param bindingResult  результат валидации.
+     * @param user           аутентифицированный пользователь.
+     * @return {@link ResponseEntity} без содержимого.
+     * @throws BindException если запрос содержит ошибки валидации.
+     */
     @Operation(
             summary = "Обновление коментария у задачи",
             description = "Обновление коментария у задачи по ее id"

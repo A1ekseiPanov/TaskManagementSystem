@@ -23,12 +23,21 @@ import java.util.Map;
 
 import static ru.panov.taskmanagementsystem.util.PathConstants.*;
 
+/**
+ * Контроллер для аутентификации и регистрации пользователей.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = AUTH_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthController {
     private final UserService userService;
 
+    /**
+     * Вход в систему.
+     *
+     * @param loginRequest тело запроса для входа в систему
+     * @return ответ с JWT токеном
+     */
     @Operation(
             summary = "Вход в систему",
             description = "Вход в систему, получаем токен для дальнейшей авторизации"
@@ -39,6 +48,13 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
+    /**
+     * Регистрация нового пользователя.
+     *
+     * @param userRequest          тело запроса для регистрации
+     * @param uriComponentsBuilder построитель компонентов URI
+     * @return ответ с данными зарегистрированного пользователя
+     */
     @Operation(
             summary = "Регистрация нового пользователя"
     )

@@ -33,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponse add(CommentRequest commentRequest, Long taskId, Long userId) {
         Task task = taskService.getTaskById(taskId);
         User user = userService.getById(userId);
-        if(!task.getPerformers().contains(user) &&
+        if (!task.getPerformers().contains(user) &&
                 !task.getUser().equals(user)) {
             throw new InputDataConflictException(
                     ("Пользователь с id:%s не можеьт добавлять коментарии к задаче c id:%s," +

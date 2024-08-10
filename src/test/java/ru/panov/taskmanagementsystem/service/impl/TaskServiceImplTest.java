@@ -172,7 +172,7 @@ class TaskServiceImplTest {
 
         verify(taskRepository, times(1)).findByIdAndUser_Id(taskId, userId);
         verify(userService, times(1)).getById(performId);
-        verify(taskRepository,times(1)).save(any());
+        verify(taskRepository, times(1)).save(any());
     }
 
     @Test
@@ -212,8 +212,8 @@ class TaskServiceImplTest {
 
         taskService.getPerformerByTaskId(taskId);
 
-        verify(userMapper,times(1)).listUserToListResponseEntity(anyList());
-        verify(taskRepository,times(1)).findAllPerformersByTaskId(taskId);
+        verify(userMapper, times(1)).listUserToListResponseEntity(anyList());
+        verify(taskRepository, times(1)).findAllPerformersByTaskId(taskId);
     }
 
     @Test
@@ -226,11 +226,11 @@ class TaskServiceImplTest {
                 .thenReturn(Optional.of(Task.builder().build()));
         when(statusService.get(taskRequest.statusId())).thenReturn(Status.builder().build());
 
-        taskService.update(taskId,taskRequest,userId);
+        taskService.update(taskId, taskRequest, userId);
 
-        verify(taskRepository,times(1)).findByIdAndUser_Id(taskId, userId);
-        verify(statusService,times(1)).get(taskRequest.statusId());
-        verify(taskRepository,times(1)).save(any());
+        verify(taskRepository, times(1)).findByIdAndUser_Id(taskId, userId);
+        verify(statusService, times(1)).get(taskRequest.statusId());
+        verify(taskRepository, times(1)).save(any());
     }
 
     @Test
@@ -251,11 +251,11 @@ class TaskServiceImplTest {
                         .performers(new ArrayList<>(Arrays.asList(user))).build()));
         when(statusService.get(statusId)).thenReturn(status);
 
-        taskService.updateStatus(taskId,userId,statusId);
+        taskService.updateStatus(taskId, userId, statusId);
 
-        verify(taskRepository,times(1)).findById(taskId);
-        verify(statusService,times(1)).get(status.getId());
-        verify(taskRepository,times(1)).save(any());
+        verify(taskRepository, times(1)).findById(taskId);
+        verify(statusService, times(1)).get(status.getId());
+        verify(taskRepository, times(1)).save(any());
     }
 
     @Test
@@ -267,9 +267,9 @@ class TaskServiceImplTest {
         when(taskRepository.findByIdAndUser_Id(taskId, userId))
                 .thenReturn(Optional.of(Task.builder().build()));
 
-        taskService.delete(taskId,userId);
+        taskService.delete(taskId, userId);
 
-        verify(taskRepository,times(1)).findByIdAndUser_Id(taskId, userId);
-        verify(taskRepository,times(1)).delete(any(Task.class));
+        verify(taskRepository, times(1)).findByIdAndUser_Id(taskId, userId);
+        verify(taskRepository, times(1)).delete(any(Task.class));
     }
 }

@@ -15,7 +15,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.panov.taskmanagementsystem.util.PathConstants.*;
 
-
 @SpringBootTest(classes = {TestConfig.class})
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 @Transactional
@@ -70,11 +69,11 @@ class AuthControllerTest {
                                 }
                                 """))
                 .andExpectAll(status().isCreated(),
-                        header().string(HttpHeaders.LOCATION, "http://localhost/users/3"),
+                        header().string(HttpHeaders.LOCATION, "http://localhost/users/5"),
                         content().contentType(MediaType.APPLICATION_JSON),
                         content().json("""
                                 {
-                                "id": 3,
+                                "id": 5,
                                 "firstName": "Вася",
                                 "lastName": "Васин",
                                 "email": "email@email.ru"

@@ -19,11 +19,21 @@ import java.util.Map;
 
 import static ru.panov.taskmanagementsystem.util.PathConstants.STATUSES_PATH;
 
+/**
+ * Класс StatusController отвечает за обработку HTTP-запросов, связанных со статусами задач.
+ * Предоставляет эндпоинты для получения, создания, обновления и удаления статусов задач.
+ */
 @RestController
 @RequestMapping(value = STATUSES_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class StatusController {
     private final StatusService statusService;
+
+    /**
+     * Получает все статусы задач.
+     *
+     * @return список объектов {@link StatusResponse}, представляющих все статусы задач.
+     */
     @Operation(
             summary = "Получение всех статусов задач"
     )
@@ -32,6 +42,16 @@ public class StatusController {
         return statusService.statuses();
     }
 
+    /**
+     * Создает новый статус задачи.
+     * Эта операция доступна только пользователям с правами 'ADMIN'.
+     *
+     * @param statusRequest        объект запроса, содержащий данные для создания нового статуса.
+     * @param bindingResult        результат валидации.
+     * @param uriComponentsBuilder используется для построения URI для созданного статуса.
+     * @return {@link ResponseEntity}, содержащий созданный объект {@link StatusResponse} и URI его местоположения.
+     * @throws BindException если запрос содержит ошибки валидации.
+     */
     @Operation(
             summary = "Создание нового статуса задач"
     )
@@ -55,6 +75,13 @@ public class StatusController {
         }
     }
 
+    /**
+     * Удаляет статус задачи по его ID.
+     * Эта операция доступна только пользователям с правами 'ADMIN'.
+     *
+     * @param statusId ID статуса, который необходимо удалить.
+     * @return {@link ResponseEntity} без содержимого.
+     */
     @Operation(
             summary = "Удаление статуса задач"
     )
@@ -66,6 +93,16 @@ public class StatusController {
                 .build();
     }
 
+    /**
+     * Обновляет существующий статус задачи по его ID.
+     * Эта операция доступна только пользователям с правами 'ADMIN'.
+     *
+     * @param statusId      ID статуса, который необходимо обновить.
+     * @param statusRequest объект запроса, содержащий обновленные данные статуса.
+     * @param bindingResult результат валидации.
+     * @return {@link ResponseEntity} без содержимого.
+     * @throws BindException если запрос содержит ошибки валидации.
+     */
     @Operation(
             summary = "Обновление статуса задач"
     )
