@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        logicalFilePath="db/changelog/changelog.xml">
+    <changeSet id="003-insert-data" author="panov">
+
+        <insert schemaName="dbo" tableName="statuses">
+            <column name="status" value="В ожидании"/>
+        </insert>
+        <insert schemaName="dbo" tableName="statuses">
+            <column name="status" value="В процессе"/>
+        </insert>
+        <insert schemaName="dbo" tableName="statuses">
+            <column name="status" value="Завершено"/>
+        </insert>
+
+        <insert schemaName="dbo" tableName="users">
+            <column name="email" value="admin@admin.ru"/>
+            <column name="first_name" value="admin"/>
+            <column name="last_name" value="admin"/>
+            <column name="password" value="$2y$10$uYKDPtCgIjSi6EXxRdn8oOa9H2ji64RBC651PpREeAadIXLJhdoie"/>
+        </insert>
+
+        <insert schemaName="dbo" tableName="users">
+            <column name="email" value="user1@user1.ru"/>
+            <column name="first_name" value="user1"/>
+            <column name="last_name" value="user1"/>
+            <column name="password" value="$2y$10$vmKpfhK13zG3zvHqGXlvLOjUDOooCnTZR94qzK0nsS16OtWxvI5mC"/>
+        </insert>
+
+        <insert schemaName="dbo" tableName="user_role">
+            <column name="user_id" value="1"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+
+        <insert schemaName="dbo" tableName="user_role">
+            <column name="user_id" value="2"/>
+            <column name="role" value="USER"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

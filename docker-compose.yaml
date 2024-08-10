@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  service-db:
+    container_name: db
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: task_management_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+#  task-manager-app:
+#    build:
+#      context: .
+#    container_name: task-manager-system
+#    depends_on:
+#      - service-db
+#    ports:
+#      - '8080:8080'
+
+volumes:
+  pg_data:
