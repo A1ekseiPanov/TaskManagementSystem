@@ -1,7 +1,7 @@
 Task Management System
 -----------------------------
 
-[Тестовое задание]() компании Effective Mobile на позицию Junior Java
+[Тестовое задание](https://github.com/A1ekseiPanov/TaskManagementSystem/blob/main/ТЗ_JAVA.pdf) компании Effective Mobile на позицию Junior Java
 Developer
 
 Task Management System - это система управления задачами.
